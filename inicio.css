@@ -1,0 +1,63 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1d2b3a; /* azul escuro elegante */
+    color: #e0e0f0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero {
+    text-align: center;
+    padding: 40px;
+}
+
+.logo-container {
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 180px;
+    max-width: 80%;
+    filter: drop-shadow(0 0 10px #00cfff); /* brilho azul neon */
+    border-radius: 12px;
+}
+
+.titulo {
+    font-size: 3rem;
+    color: #00cfff;
+    text-shadow: 0 0 10px #00cfff;
+    margin-bottom: 10px;
+}
+
+.subtitulo {
+    font-size: 1.2rem;
+    color: #c0d6e4;
+    margin-bottom: 30px;
+}
+
+.botao {
+    padding: 15px 30px;
+    background-color: #00cfff;
+    color: #1d2b3a;
+    border: none;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    box-shadow: 0 5px 15px rgba(0, 207, 255, 0.3);
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.botao:hover {
+    background-color: #00b8e6;
+    transform: scale(1.05);
+}
