@@ -2,51 +2,94 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Catálogo de Produtos - Neon Escuro</title>
+  <title>Início - Neon Escuro</title>
   <style>
-    /* Neon escuro para catálogo */
     body {
       background: #0f0f18;
       color: #0ff;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 20px;
-    }
-    h2 {
-      text-shadow: 0 0 8px #0ff;
-    }
-    #catalogo {
+      margin: 0;
       display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
+      height: 100vh;
+      overflow: hidden;
     }
-    .produto-card {
+
+    nav {
       background: #11121a;
+      width: 200px;
+      padding: 20px;
+      box-shadow: 2px 0 8px #0ff;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    nav a, nav button {
+      color: #0ff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+      padding: 10px 15px;
       border: 1px solid #0ff;
-      border-radius: 8px;
-      box-shadow: 0 0 8px #0ff;
-      padding: 15px;
-      max-width: 280px;
-      flex: 1 1 280px;
-    }
-    .produto-card h3 {
-      margin: 0 0 10px 0;
-      text-shadow: 0 0 5px #0ff;
-    }
-    .produto-card img {
-      max-width: 100%;
       border-radius: 6px;
-      display: block;
-      margin-bottom: 10px;
+      background: transparent;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.3s, color 0.3s;
     }
-    .produto-card p {
-      margin: 5px 0;
+
+    nav a:hover, nav button:hover {
+      background: #0ff;
+      color: #11121a;
+      box-shadow: 0 0 15px #0ff;
+    }
+
+    nav button {
+      border: none;
+      background: #11121a;
+      font-family: inherit;
+    }
+
+    main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    h1 {
+      text-shadow: 0 0 8px #0ff;
+      margin-top: 0;
+    }
+
+    p {
+      font-size: 1.2rem;
+      line-height: 1.5;
+      max-width: 700px;
     }
   </style>
 </head>
 <body>
-  <h2>Produtos</h2>
-  <div id="catalogo"></div>
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="produtos.html">Produtos</a>
+    <a href="admin.html">Painel Admin</a>
+    <button id="btn-logout">Sair</button>
+  </nav>
 
-  <script type="module" src="catalogo.js"></script>
+  <main>
+    <h1>Bem-vindo ao Vendo a Hora</h1>
+    <p>
+      Aqui você encontra os melhores produtos em nosso catálogo com um visual moderno e agradável.
+      Navegue pelos produtos, faça seu cadastro e aproveite nossa plataforma.
+    </p>
+  </main>
+
+  <script>
+    const btnLogout = document.getElementById('btn-logout');
+    btnLogout.addEventListener('click', () => {
+      // Redireciona para login.html ou faça logout Firebase
+      window.location.href = 'login.html';
+    });
+  </script>
 </body>
 </html>
