@@ -1,27 +1,41 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <title>Produtos - Neon Escuro</title>
-  <style>
-    /* (estilo neon escuro permanece o mesmo) */
-  </style>
-</head>
-<body>
-  <nav>
-    <a href="inicio.html">Início</a>
-    <a href="index.html">Produtos</a>
-    <a href="admin.html">Painel Admin</a>
-    <button id="btn-logout">Sair</button>
-  </nav>
+// catalogo.js
+import { db } from './config.js';
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-  <main>
-    <h1>Catálogo de Produtos</h1>
-    <div id="catalogo"></div>
-  </main>
+const catalogo = document.getElementById('catalogo');
 
-  <!-- ✅ Corrigido: usando config.js e catalogo.js -->
-  <script type="module" src="config.js"></script>
-  <script type="module" src="catalogo.js"></script>
-</body>
-</html>
+async function carregarProdutos() {
+  const produtosQuery = query(collection(db, 'produtos'), orderBy('criadoEm', 'desc'));
+  const snapshot = await getDocs(produtosQuery);
+
+  catalogo.innerHTML = '';
+  snapshot.forEach(doc => {
+    const p = doc.data();
+    const card = document.createElement('div');
+    card.className = 'produto-card';
+    card.innerHTML = `
+      <img src="${p.imagemUrl}" alt="${p.nome}" />
+      <h3>${p.nome}</h3>
+      <p>${p.descricao}</p>
+      <p><strong>R$ ${p.preco.toFixed(2)}</strong></p>
+    `;
+    catalogo.appendChild(card);
+  });
+
+  if (catalogo.innerHTML === '') {
+    catalogo.innerHTML = '<p>Nenhum produto cadastrado.</p>';
+  }
+}
+
+carregarProdutos();
+
+// Logout
+const btnLogout = document.getElementById('btn-logout');
+btnLogout.addEventListener('click', () => {
+  window.location.href = 'inicio.html';
+});
