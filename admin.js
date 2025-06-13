@@ -1,81 +1,47 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
-import { firebaseConfig } from "./firebase-config.js";
+import { db, storage } from './firebase-config.js';
+import { collection, addDoc, Timestamp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js';
 
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const storage = getStorage(app);
+const form = document.getElementById('form-produto');
 
-// Referências de elementos
-const form = document.getElementById("form-produto");
-const nomeInput = document.getElementById("nome");
-const precoInput = document.getElementById("preco");
-const descricaoInput = document.getElementById("descricao");
-const imagemInput = document.getElementById("imagem");
-const listaProdutos = document.getElementById("lista-produtos");
-const btnLogout = document.getElementById("btn-logout");
-
-// Cadastrar novo produto
-form.addEventListener("submit", async (e) => {
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const nome = nomeInput.value;
-  const preco = parseFloat(precoInput.value);
-  const descricao = descricaoInput.value;
-  const imagemFile = imagemInput.files[0];
+  const nome = document.getElementById('nome').value.trim();
+  const preco = parseFloat(document.getElementById('preco').value);
+  const descricao = document.getElementById('descricao').value.trim();
+  const imagemInput = document.getElementById('imagem');
 
-  if (!imagemFile) {
-    alert("Selecione uma imagem para o produto.");
+  if (!imagemInput.files.length) {
+    alert('Por favor, selecione uma imagem.');
     return;
   }
 
-  try {
-    const imgRef = ref(storage, `imagens/${Date.now()}_${imagemFile.name}`);
-    await uploadBytes(imgRef, imagemFile);
-    const imagemURL = await getDownloadURL(imgRef);
+  const imagemFile = imagemInput.files[0];
+  const storageRef = ref(storage, 'produtos/' + imagemFile.name);
 
-    await addDoc(collection(db, "produtos"), {
+  try {
+    // Upload da imagem
+    await uploadBytes(storageRef, imagemFile);
+
+    // Pega a URL pública
+    const imagemUrl = await getDownloadURL(storageRef);
+
+    // Adiciona o produto no Firestore
+    await addDoc(collection(db, 'produtos'), {
       nome,
       preco,
       descricao,
-      imagemURL,
-      criadoEm: new Date()
+      imagemUrl,
+      criadoEm: Timestamp.now()
     });
 
-    alert("Produto cadastrado com sucesso!");
+    alert('Produto cadastrado com sucesso!');
     form.reset();
-  } catch (error) {
-    console.error("Erro ao cadastrar produto:", error);
-    alert("Erro ao cadastrar produto. Veja o console.");
+    window.location.href = 'catalogo.html';
+
+  } catch (err) {
+    console.error("Erro ao cadastrar:", err);
+    alert("Erro ao cadastrar. Veja o console.");
   }
-});
-
-// Listar produtos cadastrados
-const produtosQuery = query(collection(db, "produtos"), orderBy("criadoEm", "desc"));
-onSnapshot(produtosQuery, (snapshot) => {
-  listaProdutos.innerHTML = "";
-  if (snapshot.empty) {
-    listaProdutos.innerHTML = "<li>Nenhum produto cadastrado.</li>";
-    return;
-  }
-
-  snapshot.forEach((doc) => {
-    const p = doc.data();
-
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <strong>${p.nome}</strong><br>
-      R$ ${p.preco.toFixed(2)}<br>
-      ${p.descricao || ""}<br>
-      <img src="${p.imagemURL}" alt="${p.nome}" />
-    `;
-    listaProdutos.appendChild(li);
-  });
-});
-
-// Logout (simples redirecionamento)
-btnLogout.addEventListener("click", () => {
-  window.location.href = "login.html";
 });
