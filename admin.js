@@ -14,17 +14,17 @@ const form = document.getElementById('form-produto');
 const lista = document.getElementById('lista-produtos');
 const btnLogout = document.getElementById('btn-logout');
 
-// Substitui o input file por um prompt para colar URL da imagem
+// Submeter novo produto
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const nome = document.getElementById('nome').value;
   const preco = parseFloat(document.getElementById('preco').value);
   const descricao = document.getElementById('descricao').value;
-  const imagemUrl = prompt("Cole o link da imagem do produto:");
+  const imagemUrl = document.getElementById('imagemUrl').value;
 
   if (!imagemUrl || !imagemUrl.startsWith('http')) {
-    alert("URL inválida. Produto não cadastrado.");
+    alert("URL da imagem inválida!");
     return;
   }
 
@@ -41,13 +41,13 @@ form.addEventListener('submit', async (e) => {
     form.reset();
     carregarProdutos();
 
-  } catch (err) {
-    console.error("Erro ao cadastrar produto:", err);
-    alert("Erro ao cadastrar. Verifique o console.");
+  } catch (error) {
+    console.error("Erro ao cadastrar produto:", error);
+    alert("Erro ao cadastrar produto.");
   }
 });
 
-// Carrega os produtos existentes
+// Carregar produtos existentes
 async function carregarProdutos() {
   lista.innerHTML = '';
   const snapshot = await getDocs(collection(db, 'produtos'));
@@ -75,9 +75,4 @@ window.deletarProduto = async (id) => {
 };
 
 // Logout
-btnLogout.addEventListener('click', () => {
-  window.location.href = 'login.html';
-});
-
-// Inicial
-carregarProdutos();
+btnLogou
