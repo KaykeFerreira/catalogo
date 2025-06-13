@@ -11,7 +11,6 @@
       margin: 0;
       display: flex;
       height: 100vh;
-      overflow: hidden;
     }
 
     nav {
@@ -52,16 +51,15 @@
 
     main {
       flex: 1;
-      padding: 20px 30px;
+      padding: 20px;
       overflow-y: auto;
     }
 
     h2, h3 {
       text-shadow: 0 0 8px #0ff;
-      margin-top: 0;
     }
 
-    input, textarea, button, select {
+    input, textarea, button {
       background: #11121a;
       border: 1px solid #0ff;
       color: #0ff;
@@ -73,53 +71,32 @@
       font-size: 1rem;
     }
 
-    input:focus, textarea:focus {
-      outline: none;
-      box-shadow: 0 0 10px #0ff;
-    }
-
-    button {
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
     button:hover {
       background: #0ff;
       color: #11121a;
       box-shadow: 0 0 15px #0ff;
     }
 
-    #lista-produtos {
-      list-style: none;
-      padding: 0;
-      margin-top: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-
     #lista-produtos li {
       background: #11121a;
-      padding: 15px;
+      margin-bottom: 10px;
+      padding: 10px;
       border-radius: 6px;
       box-shadow: 0 0 8px #0ff;
-      width: 250px;
     }
 
     #lista-produtos img {
-      margin-top: 10px;
-      border-radius: 6px;
-      max-width: 100%;
+      margin-top: 5px;
+      border-radius: 8px;
+      max-width: 120px;
       display: block;
     }
   </style>
 </head>
 <body>
   <nav>
-    <a href="inicio.html">Início</a>
-    <a href="index.html">Ver Produtos</a>
-    <a href="admin.html">Painel Admin</a>
+    <a href="index.html">Início</a>
+    <a href="catalogo.html">Produtos</a>
     <button id="btn-logout">Sair</button>
   </nav>
 
@@ -129,7 +106,7 @@
       <input type="text" id="nome" placeholder="Nome do produto" required />
       <input type="number" id="preco" placeholder="Preço" required min="0" step="0.01" />
       <textarea id="descricao" placeholder="Descrição do produto"></textarea>
-      <input type="file" id="imagem" accept="image/*" required />
+      <input type="url" id="imagemUrl" placeholder="Link da imagem (https://...)" required />
       <button type="submit">Cadastrar</button>
     </form>
 
@@ -138,11 +115,5 @@
   </main>
 
   <script type="module" src="admin.js"></script>
-  <script>
-    const btnLogout = document.getElementById('btn-logout');
-    btnLogout.addEventListener('click', () => {
-      window.location.href = 'login.html';
-    });
-  </script>
 </body>
 </html>
