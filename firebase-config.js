@@ -9,7 +9,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAzpStPKhD_-N2tmCEVsDyo8wZQXfWxU4U",
   authDomain: "vendo-a-hora.firebaseapp.com",
   projectId: "vendo-a-hora",
-  storageBucket: "vendo-a-hora.appspot.com", // Correto
+  storageBucket: "vendo-a-hora.firebasestorage.app",
   messagingSenderId: "574485032720",
   appId: "1:574485032720:web:a58138a76b1cbeb732ff95",
   measurementId: "G-RJFSZNMHRQ"
