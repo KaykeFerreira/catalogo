@@ -1,16 +1,11 @@
-// admin.js
 import { db } from './config.js';
 import {
   collection,
   addDoc,
-  serverTimestamp,
-  onSnapshot,
-  query,
-  orderBy
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const form = document.getElementById('form-produto');
-const lista = document.getElementById('lista-produtos');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -20,22 +15,27 @@ form.addEventListener('submit', async (e) => {
   const descricao = document.getElementById('descricao').value;
   const imagemUrl = document.getElementById('imagemUrl').value;
 
+  if (!imagemUrl.startsWith('http')) {
+    alert('Insira uma URL válida para a imagem.');
+    return;
+  }
+
   try {
-    await addDoc(collection(db, 'produtos'), {
+    await addDoc(collection(db, "produtos"), {
       nome,
       preco,
       descricao,
       imagemUrl,
       criadoEm: serverTimestamp()
     });
-
-    alert('Produto cadastrado com sucesso!');
+    alert("Produto cadastrado com sucesso!");
     form.reset();
   } catch (error) {
-    console.error('Erro ao cadastrar produto:', error);
-    alert('Erro ao cadastrar produto. Veja o console para detalhes.');
+    console.error("Erro ao cadastrar produto:", error);
+    alert("Erro ao cadastrar produto.");
   }
 });
+
 
 const produtosQuery = query(collection(db, 'produtos'), orderBy('criadoEm', 'desc'));
 
