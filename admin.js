@@ -1,3 +1,4 @@
+// admin.js
 import { db } from './config.js';
 import {
   collection,
@@ -10,12 +11,10 @@ import {
   orderBy
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// Referências DOM
 const form = document.getElementById('form-produto');
 const lista = document.getElementById('lista-produtos');
 const btnLogout = document.getElementById('btn-logout');
 
-// Submeter novo produto
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -48,7 +47,6 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-// Carregar produtos existentes ordenados pelo mais novo
 async function carregarProdutos() {
   lista.innerHTML = '';
   const produtosRef = collection(db, 'produtos');
@@ -74,7 +72,6 @@ async function carregarProdutos() {
   });
 }
 
-// Deletar produto
 window.deletarProduto = async (id) => {
   if (confirm("Tem certeza que deseja excluir este produto?")) {
     try {
@@ -87,11 +84,8 @@ window.deletarProduto = async (id) => {
   }
 };
 
-// Logout - redirecionar para login ou página inicial
 btnLogout.addEventListener('click', () => {
-  // Aqui você pode adicionar logout Firebase se quiser
   window.location.href = 'inicio.html';
 });
 
-// Carrega produtos ao abrir a página
 carregarProdutos();
