@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Início - Neon Escuro</title>
+  <title>Produtos - Neon Escuro</title>
   <style>
     body {
       background: #0f0f18;
@@ -54,17 +54,59 @@
       flex: 1;
       padding: 30px;
       overflow-y: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: flex-start;
     }
 
     h1 {
+      width: 100%;
       text-shadow: 0 0 8px #0ff;
       margin-top: 0;
+      margin-bottom: 20px;
     }
 
-    p {
-      font-size: 1.2rem;
-      line-height: 1.5;
-      max-width: 700px;
+    .produto-card {
+      background: #11121a;
+      border: 1px solid #0ff;
+      border-radius: 10px;
+      padding: 15px;
+      width: 200px;
+      box-shadow: 0 0 10px #0ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: box-shadow 0.3s;
+    }
+
+    .produto-card:hover {
+      box-shadow: 0 0 20px #0ff;
+    }
+
+    .produto-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      background: #000;
+    }
+
+    .produto-card h3 {
+      margin: 0 0 8px 0;
+    }
+
+    .produto-card p {
+      margin: 0 0 5px 0;
+      font-size: 0.9rem;
+      color: #a0f0f0;
+    }
+
+    .produto-card strong {
+      font-size: 1.1rem;
+      color: #0ff;
     }
   </style>
 </head>
@@ -77,17 +119,59 @@
   </nav>
 
   <main>
-    <h1>Bem-vindo ao Vendo a Hora</h1>
-    <p>
-      Aqui você encontra os melhores produtos em nosso catálogo com um visual moderno e agradável.
-      Navegue pelos produtos, faça seu cadastro e aproveite nossa plataforma.
-    </p>
+    <h1>Catálogo de Produtos</h1>
+    <div id="catalogo"></div>
   </main>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    // Sua config Firebase — substitua pelos seus dados reais
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "SEU_AUTH_DOMAIN",
+      projectId: "SEU_PROJECT_ID",
+      storageBucket: "SEU_STORAGE_BUCKET",
+      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+      appId: "SEU_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const catalogo = document.getElementById('catalogo');
+
+    async function carregarProdutos() {
+      const produtosRef = collection(db, 'produtos');
+      const q = query(produtosRef, orderBy('criadoEm', 'desc'));
+      const querySnapshot = await getDocs(q);
+
+      catalogo.innerHTML = ''; // limpa antes de mostrar
+
+      querySnapshot.forEach(doc => {
+        const p = doc.data();
+        const card = document.createElement('div');
+        card.className = 'produto-card';
+        card.innerHTML = `
+          <img src="${p.imagemUrl}" alt="${p.nome}" />
+          <h3>${p.nome}</h3>
+          <p>${p.descricao || ''}</p>
+          <strong>R$ ${p.preco.toFixed(2)}</strong>
+        `;
+        catalogo.appendChild(card);
+      });
+
+      if (catalogo.innerHTML === '') {
+        catalogo.innerHTML = '<p>Nenhum produto cadastrado.</p>';
+      }
+    }
+
+    carregarProdutos();
+
+    // Logout fake só para navegação
     const btnLogout = document.getElementById('btn-logout');
     btnLogout.addEventListener('click', () => {
-      // Redireciona para login.html ou faça logout Firebase
       window.location.href = 'inicio.html';
     });
   </script>
