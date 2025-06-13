@@ -1,4 +1,3 @@
-// admin.js
 import { db } from './config.js';
 import {
   collection,
@@ -6,10 +5,12 @@ import {
   serverTimestamp,
   getDocs,
   deleteDoc,
-  doc
+  doc,
+  query,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// Referências
+// Referências DOM
 const form = document.getElementById('form-produto');
 const lista = document.getElementById('lista-produtos');
 const btnLogout = document.getElementById('btn-logout');
@@ -18,10 +19,10 @@ const btnLogout = document.getElementById('btn-logout');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const nome = document.getElementById('nome').value;
+  const nome = document.getElementById('nome').value.trim();
   const preco = parseFloat(document.getElementById('preco').value);
-  const descricao = document.getElementById('descricao').value;
-  const imagemUrl = document.getElementById('imagemUrl').value;
+  const descricao = document.getElementById('descricao').value.trim();
+  const imagemUrl = document.getElementById('imagemUrl').value.trim();
 
   if (!imagemUrl || !imagemUrl.startsWith('http')) {
     alert("URL da imagem inválida!");
@@ -47,10 +48,17 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-// Carregar produtos existentes
+// Carregar produtos existentes ordenados pelo mais novo
 async function carregarProdutos() {
   lista.innerHTML = '';
-  const snapshot = await getDocs(collection(db, 'produtos'));
+  const produtosRef = collection(db, 'produtos');
+  const q = query(produtosRef, orderBy('criadoEm', 'desc'));
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) {
+    lista.innerHTML = '<li>Nenhum produto cadastrado.</li>';
+    return;
+  }
 
   snapshot.forEach(docSnap => {
     const p = docSnap.data();
@@ -58,7 +66,7 @@ async function carregarProdutos() {
     li.innerHTML = `
       <strong>${p.nome}</strong><br>
       R$ ${p.preco?.toFixed(2)}<br>
-      ${p.descricao}<br>
+      ${p.descricao || ''}<br>
       <img src="${p.imagemUrl}" alt="${p.nome}" />
       <button onclick="deletarProduto('${docSnap.id}')">Excluir</button>
     `;
@@ -69,10 +77,21 @@ async function carregarProdutos() {
 // Deletar produto
 window.deletarProduto = async (id) => {
   if (confirm("Tem certeza que deseja excluir este produto?")) {
-    await deleteDoc(doc(db, 'produtos', id));
-    carregarProdutos();
+    try {
+      await deleteDoc(doc(db, 'produtos', id));
+      carregarProdutos();
+    } catch (error) {
+      console.error("Erro ao excluir produto:", error);
+      alert("Erro ao excluir produto.");
+    }
   }
 };
 
-// Logout
-btnLogou
+// Logout - redirecionar para login ou página inicial
+btnLogout.addEventListener('click', () => {
+  // Aqui você pode adicionar logout Firebase se quiser
+  window.location.href = 'inicio.html';
+});
+
+// Carrega produtos ao abrir a página
+carregarProdutos();
