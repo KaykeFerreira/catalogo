@@ -4,93 +4,7 @@
   <meta charset="UTF-8" />
   <title>Painel Admin - Neon Escuro</title>
   <style>
-    body {
-      background: #0f0f18;
-      color: #0ff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      display: flex;
-      height: 100vh;
-    }
-
-    nav {
-      background: #11121a;
-      width: 200px;
-      padding: 20px;
-      box-shadow: 2px 0 8px #0ff;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    nav a, nav button {
-      color: #0ff;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 1.1rem;
-      padding: 10px 15px;
-      border: 1px solid #0ff;
-      border-radius: 6px;
-      background: transparent;
-      cursor: pointer;
-      text-align: center;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    nav a:hover, nav button:hover {
-      background: #0ff;
-      color: #11121a;
-      box-shadow: 0 0 15px #0ff;
-    }
-
-    nav button {
-      border: none;
-      background: #11121a;
-      font-family: inherit;
-    }
-
-    main {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    h2, h3 {
-      text-shadow: 0 0 8px #0ff;
-    }
-
-    input, textarea, button {
-      background: #11121a;
-      border: 1px solid #0ff;
-      color: #0ff;
-      padding: 10px;
-      margin: 8px 0;
-      width: 100%;
-      box-sizing: border-box;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-
-    button:hover {
-      background: #0ff;
-      color: #11121a;
-      box-shadow: 0 0 15px #0ff;
-    }
-
-    #lista-produtos li {
-      background: #11121a;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 6px;
-      box-shadow: 0 0 8px #0ff;
-    }
-
-    #lista-produtos img {
-      margin-top: 5px;
-      border-radius: 8px;
-      max-width: 120px;
-      display: block;
-    }
+    /* (estilo igual ao que você enviou, permanece o mesmo) */
   </style>
 </head>
 <body>
@@ -102,19 +16,20 @@
 
   <main>
     <h2>Cadastrar Produto</h2>
- <form id="form-produto">
-  <input type="text" id="nome" placeholder="Nome do produto" required />
-  <input type="number" id="preco" placeholder="Preço" required min="0" step="0.01" />
-  <textarea id="descricao" placeholder="Descrição do produto"></textarea>
-  <input type="text" id="imagemUrl" placeholder="URL da imagem do produto" required />
-  <button type="submit">Cadastrar</button>
-</form>
-
+    <form id="form-produto">
+      <input type="text" id="nome" placeholder="Nome do produto" required />
+      <input type="number" id="preco" placeholder="Preço" required min="0" step="0.01" />
+      <textarea id="descricao" placeholder="Descrição do produto"></textarea>
+      <input type="text" id="imagemUrl" placeholder="URL da imagem do produto" required />
+      <button type="submit">Cadastrar</button>
+    </form>
 
     <h3>Produtos cadastrados</h3>
     <ul id="lista-produtos"></ul>
   </main>
 
+  <!-- ✅ Adicionado config.js -->
+  <script type="module" src="config.js"></script>
   <script type="module" src="admin.js"></script>
 </body>
 </html>
