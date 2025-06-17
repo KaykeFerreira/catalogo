@@ -1,106 +1,85 @@
-import { db, auth } from './firebase-config.js';
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  getDocs,
-  deleteDoc,
-  doc,
-  query,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+// admin.js
 
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+// Importação do Firebase
+import { db } from './firebase-config.js';
+import { collection, addDoc, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
+// Referência à coleção "produtos" no Firestore
+const produtosCollection = collection(db, 'produtos');
+
+// Formulário de cadastro
 const form = document.getElementById('form-produto');
-const lista = document.getElementById('lista-produtos');
-const btnLogout = document.getElementById('btn-logout');
+const listaProdutos = document.getElementById('lista-produtos');
 
-// Verificar autenticação
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = 'login.html';
-  }
+// Aplicar máscara no campo de preço enquanto digita
+const precoInput = document.getElementById('preco');
+precoInput.addEventListener('input', () => {
+  let valor = precoInput.value.replace(/\D/g, ''); // Remove tudo que não é número
+  valor = (parseFloat(valor) / 100).toFixed(2) + '';
+  valor = valor.replace('.', ',');
+  valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  precoInput.value = valor;
 });
 
+// Ao submeter o formulário
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const nome = document.getElementById('nome').value.trim();
-  const preco = parseFloat(document.getElementById('preco').value);
-  const descricao = document.getElementById('descricao').value.trim();
-  const imagemUrl = document.getElementById('imagemUrl').value.trim();
+  const nome = document.getElementById('nome').value;
+  const descricao = document.getElementById('descricao').value;
+  const imagemUrl = document.getElementById('imagemUrl').value;
 
-  if (!imagemUrl || !imagemUrl.startsWith('http')) {
-    alert("URL da imagem inválida!");
-    return;
-  }
+  // Aqui fazemos a limpeza da formatação do preço
+  let precoFormatado = precoInput.value;
+  precoFormatado = precoFormatado.replace(/\./g, '').replace(',', '.');
+  const precoNumero = parseFloat(precoFormatado);  // Agora o preço é um número puro
 
   try {
-    await addDoc(collection(db, 'produtos'), {
+    await addDoc(produtosCollection, {
       nome,
-      preco,
+      preco: precoNumero,
       descricao,
-      imagemUrl,
-      criadoEm: serverTimestamp()
+      imagemUrl
     });
 
-    alert("Produto cadastrado com sucesso!");
     form.reset();
-    carregarProdutos();
-
+    listarProdutos();
   } catch (error) {
-    console.error("Erro ao cadastrar produto:", error);
-    alert("Erro ao cadastrar produto.");
+    console.error('Erro ao adicionar produto:', error);
   }
 });
 
-async function carregarProdutos() {
-  lista.innerHTML = '';
-  const produtosRef = collection(db, 'produtos');
-  const q = query(produtosRef, orderBy('criadoEm', 'desc'));
-  const snapshot = await getDocs(q);
+// Função para listar produtos já cadastrados
+async function listarProdutos() {
+  listaProdutos.innerHTML = '';
 
-  if (snapshot.empty) {
-    lista.innerHTML = '<li>Nenhum produto cadastrado.</li>';
-    return;
-  }
+  const querySnapshot = await getDocs(produtosCollection);
+  querySnapshot.forEach((docItem) => {
+    const produto = docItem.data();
 
-  snapshot.forEach(docSnap => {
-    const p = docSnap.data();
+    // Formatar o preço para exibição (R$ 1.234,56)
+    let precoFormatado = produto.preco.toFixed(2).toString().replace('.', ',');
+    precoFormatado = precoFormatado.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
     const li = document.createElement('li');
     li.innerHTML = `
-      <strong>${p.nome}</strong><br>
-      R$ ${p.preco?.toFixed(2)}<br>
-      ${p.descricao || ''}<br>
-      <img src="${p.imagemUrl}" alt="${p.nome}" />
-      <button onclick="deletarProduto('${docSnap.id}')">Excluir</button>
+      <strong>${produto.nome}</strong><br/>
+      R$ ${precoFormatado}<br/>
+      ${produto.descricao}<br/>
+      <img src="${produto.imagemUrl}" alt="${produto.nome}" /><br/>
+      <button onclick="removerProduto('${docItem.id}')">Remover</button>
     `;
-    lista.appendChild(li);
+    listaProdutos.appendChild(li);
   });
 }
 
-window.deletarProduto = async (id) => {
-  if (confirm("Tem certeza que deseja excluir este produto?")) {
-    try {
-      await deleteDoc(doc(db, 'produtos', id));
-      carregarProdutos();
-    } catch (error) {
-      console.error("Erro ao excluir produto:", error);
-      alert("Erro ao excluir produto.");
-    }
+// Remover produto
+window.removerProduto = async (id) => {
+  if (confirm('Tem certeza que deseja remover este produto?')) {
+    await deleteDoc(doc(produtosCollection, id));
+    listarProdutos();
   }
 };
 
-// Logout correto
-btnLogout.addEventListener('click', async () => {
-  try {
-    await signOut(auth);
-    window.location.href = 'login.html';
-  } catch (error) {
-    alert("Erro ao sair. Tente novamente.");
-  }
-});
-
-// Carregar produtos na inicialização
-carregarProdutos();
+// Listar produtos ao carregar a página
+listarProdutos();
