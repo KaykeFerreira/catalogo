@@ -128,7 +128,7 @@
     <h2>Cadastrar Produto</h2>
     <form id="form-produto">
       <input type="text" id="nome" placeholder="Nome do produto" required />
-      <input type="number" id="valor" placeholder="Valor unitário (R$)*">
+     <input type="number" id="preco" placeholder="Preço" required min="0" step="0.01" />
       <textarea id="descricao" placeholder="Descrição do produto"></textarea>
       <input type="url" id="imagemUrl" placeholder="URL da imagem do produto" required />
       <button type="submit">Cadastrar</button>
