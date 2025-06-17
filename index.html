@@ -1,27 +1,90 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Produtos - Neon Escuro</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo - Vendo a Hora</title>
   <style>
-    /* (estilo neon escuro permanece o mesmo) */
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+    }
+    header {
+      padding: 20px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.8);
+      font-size: 32px;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 30px;
+    }
+    .produto {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid #00ffff;
+      border-radius: 10px;
+      margin: 15px;
+      padding: 20px;
+      width: 250px;
+      box-shadow: 0 0 20px #00ffff33;
+      transition: transform 0.3s;
+    }
+    .produto:hover {
+      transform: scale(1.05);
+    }
+    .produto img {
+      width: 100%;
+      border-radius: 10px;
+    }
+    .produto h3 {
+      margin: 10px 0;
+      color: #00ffff;
+    }
+    .produto p {
+      color: #ccc;
+    }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="inicio.html">Início</a>
-    <a href="index.html">Produtos</a>
-    <a href="admin.html">Painel Admin</a>
-    <button id="btn-logout">Sair</button>
-  </nav>
+  <header>Vendo a Hora - Catálogo</header>
 
-  <main>
-    <h1>Catálogo de Produtos</h1>
-    <div id="catalogo"></div>
-  </main>
+  <div class="container" id="catalogo"></div>
 
-  <!-- ✅ Corrigido: usando config.js e catalogo.js -->
-  <script type="module" src="config.js"></script>
-  <script type="module" src="catalogo.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { firebaseConfig } from "./config.js";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function carregarProdutos() {
+      const querySnapshot = await getDocs(collection(db, "produtos"));
+      const catalogo = document.getElementById("catalogo");
+      catalogo.innerHTML = "";
+
+      querySnapshot.forEach((doc) => {
+        const produto = doc.data();
+        const div = document.createElement("div");
+        div.className = "produto";
+        div.innerHTML = `
+          <img src="${produto.imagem}" alt="${produto.nome}">
+          <h3>${produto.nome}</h3>
+          <p>${produto.descricao}</p>
+          <p><strong>R$ ${produto.preco.toFixed(2)}</strong></p>
+        `;
+        catalogo.appendChild(div);
+      });
+    }
+
+    carregarProdutos();
+  </script>
 </body>
 </html>
