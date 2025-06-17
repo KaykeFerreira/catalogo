@@ -1,5 +1,3 @@
-console.log("Firebase App iniciado:", app);
-
 // admin.js
 import { db, auth } from './firebase-config.js';
 import {
