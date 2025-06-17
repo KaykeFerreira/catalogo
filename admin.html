@@ -139,10 +139,15 @@
 
   <script type="module" src="admin.js"></script>
   <script>
-    const btnLogout = document.getElementById('btn-logout');
-    btnLogout.addEventListener('click', () => {
-      window.location.href = 'login.html';
-    });
+    import { auth } from './firebase-config.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = 'login.html';
+  }
+});
+
   </script>
 </body>
 </html>
