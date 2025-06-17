@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - Admin</title>
+  <style>
+    body { background: #0f0f18; color: #0ff; font-family: 'Segoe UI', Tahoma; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    form { background: #11121a; padding: 30px; border-radius: 10px; box-shadow: 0 0 15px #0ff; width: 300px; }
+    h2 { text-align: center; text-shadow: 0 0 8px #0ff; }
+    input, button { width: 100%; padding: 10px; margin-top: 15px; border: 1px solid #0ff; border-radius: 5px; background: transparent; color: #0ff; }
+    button { cursor: pointer; font-weight: bold; transition: 0.3s; }
+    button:hover { background: #0ff; color: #11121a; }
+  </style>
+</head>
+<body>
+  <form id="login-form">
+    <h2>Admin Login</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="senha" placeholder="Senha" required />
+    <button type="submit">Entrar</button>
+  </form>
+
+  <script type="module">
+    import { auth } from './firebase-config.js';
+    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    const form = document.getElementById('login-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, senha);
+        window.location.href = 'admin.html';
+      } catch (error) {
+        alert('Erro no login: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
