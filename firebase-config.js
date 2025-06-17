@@ -11,11 +11,9 @@ const firebaseConfig = {
   storageBucket: "vendo-a-hora.appspot.com", // ✅ Corrigido aqui
   messagingSenderId: "574485032720",
   appId: "1:574485032720:web:a58138a76b1cbeb732ff95",
-  measurementId: "G-RJFSZNMHRQ"
 };
 
 const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
-export const storage = getStorage(app);
 export const auth = getAuth(app);
