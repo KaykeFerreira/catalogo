@@ -42,7 +42,8 @@ form.addEventListener('submit', async (e) => {
       nome,
       preco,
       descricao,
-      imagemUrl
+      imagemUrl,
+      criadoEm: new Date()
     });
 
     form.reset();
