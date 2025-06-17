@@ -16,7 +16,7 @@
 
     nav {
       background: #11121a;
-      width: 200px;
+      width: 220px;
       padding: 20px;
       box-shadow: 2px 0 8px #0ff;
       display: flex;
@@ -24,7 +24,7 @@
       gap: 20px;
     }
 
-    nav a, nav button {
+    nav a {
       color: #0ff;
       text-decoration: none;
       font-weight: bold;
@@ -38,16 +38,10 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    nav a:hover, nav button:hover {
+    nav a:hover {
       background: #0ff;
       color: #11121a;
       box-shadow: 0 0 15px #0ff;
-    }
-
-    nav button {
-      border: none;
-      background: #11121a;
-      font-family: inherit;
     }
 
     main {
@@ -71,26 +65,17 @@
 <body>
   <nav>
     <a href="inicio.html">Início</a>
-    <a href="index.html">Produtos</a>
+    <a href="produtos.html">Produtos</a>
     <a href="admin.html">Painel Admin</a>
-    <a href="login.html"> Login</a>
-    <button id="btn-logout">Sair</button>
+    <a href="login.html">Login</a>
   </nav>
 
   <main>
     <h1>Bem-vindo ao Vendo a Hora</h1>
     <p>
       Aqui você encontra os melhores produtos em nosso catálogo com um visual moderno e agradável.
-      Navegue pelos produtos, faça seu cadastro e aproveite nossa plataforma.
+      Navegue pelos produtos e aproveite nossa plataforma.
     </p>
   </main>
-
-  <script>
-    const btnLogout = document.getElementById('btn-logout');
-    btnLogout.addEventListener('click', () => {
-      // Redireciona para login.html ou faça logout Firebase
-      window.location.href = 'login.html';
-    });
-  </script>
 </body>
 </html>
