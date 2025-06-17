@@ -101,7 +101,7 @@
       lista.innerHTML = '';
 
       const produtosRef = collection(db, 'produtos');
-      const q = query(produtosRef, orderBy('criadoEm', 'desc'));
+      const snapshot = await getDocs(produtosRef);
       const snapshot = await getDocs(q);
 
       if (snapshot.empty) {
