@@ -2,21 +2,114 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste CSS inline</title>
+  <title>Login - Admin</title>
+  <link rel="stylesheet" href="inicio.css" />
+
   <style>
-    body {
-      background: #0f0f18;
-      color: #0ff;
-      font-family: 'Segoe UI', Tahoma;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    body { 
+      background: #0f0f18; 
+      color: #0ff; 
+      font-family: 'Segoe UI', Tahoma; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh; 
       margin: 0;
+    }
+    form { 
+      background: #11121a; 
+      padding: 30px; 
+      border-radius: 10px; 
+      box-shadow: 0 0 15px #0ff; 
+      width: 320px; 
+      display: flex;
+      flex-direction: column;
+    }
+    h2 { 
+      text-align: center; 
+      text-shadow: 0 0 8px #0ff; 
+      margin-bottom: 20px;
+    }
+    input, button { 
+      width: 100%; 
+      padding: 10px; 
+      margin-top: 15px; 
+      border: 1px solid #0ff; 
+      border-radius: 5px; 
+      background: transparent; 
+      color: #0ff; 
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 10px #0ff;
+    }
+    button { 
+      cursor: pointer; 
+      font-weight: bold; 
+      transition: 0.3s; 
+      border: none;
+      background: #11121a;
+    }
+    button:hover:enabled { 
+      background: #0ff; 
+      color: #11121a; 
+      box-shadow: 0 0 15px #0ff; 
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+    .error-message {
+      color: #f33;
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+      text-shadow: none;
     }
   </style>
 </head>
 <body>
-  <h1>Texto azul neon centralizado</h1>
+  <form id="login-form">
+    <h2>Admin Login</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="senha" placeholder="Senha" required />
+    <button type="submit">Entrar</button>
+    <div class="error-message" id="error-msg"></div>
+  </form>
+
+  <script type="module">
+    import { auth } from './firebase-config.js';
+    import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    const form = document.getElementById('login-form');
+    const btn = form.querySelector('button');
+    const errorMsg = document.getElementById('error-msg');
+
+    // Se já estiver logado, redireciona direto para admin.html
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        window.location.href = 'admin.html';
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.textContent = '';
+      btn.disabled = true;
+
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, senha);
+        // redirecionamento será feito pelo onAuthStateChanged
+      } catch (error) {
+        errorMsg.textContent = 'Erro no login: ' + error.message;
+        btn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
