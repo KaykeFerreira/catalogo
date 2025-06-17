@@ -152,23 +152,6 @@
   });
 </script>
 
-  <script>
-  const precoInput = document.getElementById('preco');
-
-  precoInput.addEventListener('input', () => {
-    let valor = precoInput.value.replace(/\D/g, ''); // Remove tudo que não for número
-    valor = (parseFloat(valor) / 100).toFixed(2) + ''; // Divide por 100 e fixa 2 casas decimais
-    valor = valor.replace(".", ","); // Troca ponto por vírgula
-    valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Adiciona pontos de milhar
-    precoInput.value = valor;
-  });
-
-  // Para remover a formatação ao enviar o formulário, caso você precise o valor "puro" no backend
-  document.getElementById('form-produto').addEventListener('submit', (e) => {
-    const raw = precoInput.value.replace(/\./g, '').replace(',', '.');
-    precoInput.value = raw;
-  });
-</script>
 
 </body>
 </html>
