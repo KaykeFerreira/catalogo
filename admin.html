@@ -1,35 +1,92 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Painel Admin - Neon Escuro</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Vendo a Hora</title>
   <style>
-    /* (estilo igual ao que você enviou, permanece o mesmo) */
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+    }
+    header {
+      padding: 20px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.8);
+      font-size: 32px;
+      color: #ff00ff;
+      text-shadow: 0 0 10px #ff00ff;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #ff00ff33;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      background: #ff00ff;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #cc00cc;
+    }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="index.html">Início</a>
-    <a href="catalogo.html">Produtos</a>
-    <button id="btn-logout">Sair</button>
-  </nav>
+  <header>Painel Administrativo</header>
 
-  <main>
-    <h2>Cadastrar Produto</h2>
-    <form id="form-produto">
-      <input type="text" id="nome" placeholder="Nome do produto" required />
-      <input type="number" id="preco" placeholder="Preço" required min="0" step="0.01" />
-      <textarea id="descricao" placeholder="Descrição do produto"></textarea>
-      <input type="text" id="imagemUrl" placeholder="URL da imagem do produto" required />
-      <button type="submit">Cadastrar</button>
-    </form>
+  <div class="container">
+    <h2>Adicionar Produto</h2>
+    <input type="text" id="nome" placeholder="Nome do produto">
+    <textarea id="descricao" placeholder="Descrição do produto"></textarea>
+    <input type="number" id="preco" placeholder="Preço">
+    <input type="text" id="imagem" placeholder="URL da Imagem">
+    <button onclick="adicionarProduto()">Salvar</button>
+  </div>
 
-    <h3>Produtos cadastrados</h3>
-    <ul id="lista-produtos"></ul>
-  </main>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { firebaseConfig } from "./config.js";
 
-  <!-- ✅ Adicionado config.js -->
-  <script type="module" src="config.js"></script>
-  <script type="module" src="admin.js"></script>
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function adicionarProduto() {
+      const nome = document.getElementById("nome").value;
+      const descricao = document.getElementById("descricao").value;
+      const preco = parseFloat(document.getElementById("preco").value);
+      const imagem = document.getElementById("imagem").value;
+
+      if (!nome || !descricao || isNaN(preco) || !imagem) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      await addDoc(collection(db, "produtos"), { nome, descricao, preco, imagem });
+      alert("Produto cadastrado com sucesso!");
+
+      document.getElementById("nome").value = "";
+      document.getElementById("descricao").value = "";
+      document.getElementById("preco").value = "";
+      document.getElementById("imagem").value = "";
+    }
+  </script>
 </body>
 </html>
