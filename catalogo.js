@@ -1,5 +1,5 @@
 // catalogo.js
-import { db } from './config.js';
+import { db } from './firebase-config.js';
 import {
   collection,
   getDocs,
