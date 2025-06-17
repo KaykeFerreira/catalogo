@@ -1,7 +1,7 @@
 console.log("Firebase App iniciado:", app);
 
 // admin.js
-import { db } from './config.js';
+import { db } from './firebase-config.js';
 import {
   collection,
   addDoc,
