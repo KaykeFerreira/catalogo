@@ -1,19 +1,81 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vendo a Hora</title>
-  <link rel="stylesheet" href="inicio.css">
+  <meta charset="UTF-8" />
+  <title>Início - Neon Escuro</title>
+  <style>
+    body {
+      background: #0f0f18;
+      color: #0ff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    nav {
+      background: #11121a;
+      width: 220px;
+      padding: 20px;
+      box-shadow: 2px 0 8px #0ff;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    nav a {
+      color: #0ff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+      padding: 10px 15px;
+      border: 1px solid #0ff;
+      border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    nav a:hover {
+      background: #0ff;
+      color: #11121a;
+      box-shadow: 0 0 15px #0ff;
+    }
+
+    main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    h1 {
+      text-shadow: 0 0 8px #0ff;
+      margin-top: 0;
+    }
+
+    p {
+      font-size: 1.2rem;
+      line-height: 1.5;
+      max-width: 700px;
+    }
+  </style>
 </head>
 <body>
-  <div class="hero">
-    <div class="logo-container">
-      <img src="logo.png" alt="Logo Vendo a Hora" class="logo">
-    </div>
-    <h1 class="titulo">VENDO A HORA</h1>
-    <p class="subtitulo">Elegância no tempo. Precisão no seu estilo.</p>
-    <a href="index.html" class="botao">Entrar</a> <!-- ✅ Link para index.html -->
-  </div>
+  <nav>
+    <a href="inicio.html">Início</a>
+    <a href="index.html">Produtos</a>
+    <a href="admin.html">Painel Admin</a>
+    <a href="login.html">Login</a>
+  </nav>
+
+  <main>
+    <h1>Bem-vindo ao Vendo a Hora</h1>
+    <p>
+      Aqui você encontra os melhores produtos em nosso catálogo com um visual moderno e agradável.
+      Navegue pelos produtos e aproveite nossa plataforma.
+    </p>
+  </main>
 </body>
 </html>
