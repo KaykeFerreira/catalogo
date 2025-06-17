@@ -1,42 +1,31 @@
-// admin.js
+import { db, auth } from './firebase-config.js';
+import { collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-// Importação do Firebase
-import { db } from './firebase-config.js';
-import { collection, addDoc, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
-
-// Referência à coleção "produtos" no Firestore
+// Referência à coleção de produtos
 const produtosCollection = collection(db, 'produtos');
 
-// Seleção dos elementos
-const form = document.getElementById('form-produto');
-const listaProdutos = document.getElementById('lista-produtos');
+// Máscara reversa para o campo de preço
 const precoInput = document.getElementById('preco');
-
-// Máscara de preço ao digitar
-let valorAnterior = '';
+let valorNumerico = '';
 
 precoInput.addEventListener('input', () => {
-  let valor = precoInput.value.replace(/\D/g, ''); // Remove tudo que não for dígito
+  // Remove tudo que não for número
+  valorNumerico = precoInput.value.replace(/\D/g, '');
 
-  if (valor === '') {
+  if (valorNumerico === '') {
     precoInput.value = '';
-    valorAnterior = '';
     return;
   }
 
-  while (valor.length < 3) {
-    valor = '0' + valor; // Garante no mínimo 3 dígitos (ex: 000 → 0,00)
-  }
+  const numero = parseFloat(valorNumerico) / 100;
+  const formatado = numero.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-  const parteInteira = valor.slice(0, valor.length - 2);
-  const parteDecimal = valor.slice(-2);
-
-  let parteInteiraFormatada = parteInteira.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  precoInput.value = parteInteiraFormatada + ',' + parteDecimal;
-  valorAnterior = precoInput.value;
+  precoInput.value = formatado;
 });
 
-// Envio do formulário
+// Cadastro do produto
+const form = document.getElementById('form-produto');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -44,56 +33,61 @@ form.addEventListener('submit', async (e) => {
   const descricao = document.getElementById('descricao').value;
   const imagemUrl = document.getElementById('imagemUrl').value;
 
-  // Limpeza da máscara antes de enviar
-  let precoFormatado = precoInput.value.replace(/\./g, '').replace(',', '.');
-  const precoNumero = parseFloat(precoFormatado);
+  // Limpa o valor formatado e converte para número
+  const precoFormatado = precoInput.value.replace(/\./g, '').replace(',', '.');
+  const preco = parseFloat(precoFormatado);
 
   try {
     await addDoc(produtosCollection, {
       nome,
-      preco: precoNumero,
+      preco,
       descricao,
       imagemUrl
     });
 
     form.reset();
+    valorNumerico = '';
     listarProdutos();
   } catch (error) {
-    console.error('Erro ao adicionar produto:', error);
+    console.error("Erro ao cadastrar produto: ", error);
   }
 });
 
-// Função para listar produtos cadastrados
+// Listagem de produtos
 async function listarProdutos() {
-  listaProdutos.innerHTML = '';
+  const lista = document.getElementById('lista-produtos');
+  lista.innerHTML = '';
 
   const querySnapshot = await getDocs(produtosCollection);
   querySnapshot.forEach((docItem) => {
-    const produto = docItem.data();
+    const data = docItem.data();
 
-    // Formatar o preço na exibição
-    let precoFormatado = produto.preco.toFixed(2).toString().replace('.', ',');
-    precoFormatado = precoFormatado.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    // Formata o preço para exibição
+    const precoFormatado = data.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
     const li = document.createElement('li');
     li.innerHTML = `
-      <strong>${produto.nome}</strong><br/>
-      R$ ${precoFormatado}<br/>
-      ${produto.descricao}<br/>
-      <img src="${produto.imagemUrl}" alt="${produto.nome}" /><br/>
-      <button onclick="removerProduto('${docItem.id}')">Remover</button>
+      <strong>${data.nome}</strong><br>
+      ${precoFormatado}<br>
+      ${data.descricao}<br>
+      <img src="${data.imagemUrl}" alt="${data.nome}">
+      <br><button data-id="${docItem.id}">Excluir</button>
     `;
-    listaProdutos.appendChild(li);
+
+    li.querySelector('button').addEventListener('click', async () => {
+      await deleteDoc(doc(produtosCollection, docItem.id));
+      listarProdutos();
+    });
+
+    lista.appendChild(li);
   });
 }
 
-// Remoção de produto
-window.removerProduto = async (id) => {
-  if (confirm('Tem certeza que deseja remover este produto?')) {
-    await deleteDoc(doc(produtosCollection, id));
-    listarProdutos();
-  }
-};
+// Logout
+document.getElementById('btn-logout').addEventListener('click', async () => {
+  await signOut(auth);
+  window.location.href = 'login.html';
+});
 
-// Carrega produtos ao abrir a página
+// Inicializa a listagem ao carregar a página
 listarProdutos();
