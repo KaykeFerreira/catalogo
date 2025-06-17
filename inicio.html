@@ -111,10 +111,17 @@
 
       snapshot.forEach(docSnap => {
         const p = docSnap.data();
+
+        // Formatar o preço corretamente
+        const precoFormatado = new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        }).format(p.preco);
+
         const li = document.createElement('li');
         li.innerHTML = `
           <strong>${p.nome}</strong><br>
-          R$ ${p.preco?.toFixed(2)}<br>
+          ${precoFormatado}<br>
           ${p.descricao || ''}<br>
           <img src="${p.imagemUrl}" alt="${p.nome}" />
         `;
