@@ -55,10 +55,27 @@
       margin-top: 0;
     }
 
-    p {
-      font-size: 1.2rem;
-      line-height: 1.5;
-      max-width: 700px;
+    #lista-produtos {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    #lista-produtos li {
+      background: #11121a;
+      padding: 15px;
+      border-radius: 6px;
+      box-shadow: 0 0 8px #0ff;
+      width: 250px;
+    }
+
+    #lista-produtos img {
+      margin-top: 10px;
+      border-radius: 6px;
+      max-width: 100%;
+      display: block;
     }
   </style>
 </head>
@@ -71,11 +88,41 @@
   </nav>
 
   <main>
-    <h1>Bem-vindo ao Vendo a Hora</h1>
-    <p>
-      Aqui você encontra os melhores produtos em nosso catálogo com um visual moderno e agradável.
-      Navegue pelos produtos e aproveite nossa plataforma.
-    </p>
+    <h1>Produtos disponíveis</h1>
+    <ul id="lista-produtos"></ul>
   </main>
+
+  <script type="module">
+    import { db } from './firebase-config.js';
+    import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    async function carregarProdutos() {
+      const lista = document.getElementById('lista-produtos');
+      lista.innerHTML = '';
+
+      const produtosRef = collection(db, 'produtos');
+      const q = query(produtosRef, orderBy('criadoEm', 'desc'));
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        lista.innerHTML = '<li>Nenhum produto cadastrado.</li>';
+        return;
+      }
+
+      snapshot.forEach(docSnap => {
+        const p = docSnap.data();
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${p.nome}</strong><br>
+          R$ ${p.preco?.toFixed(2)}<br>
+          ${p.descricao || ''}<br>
+          <img src="${p.imagemUrl}" alt="${p.nome}" />
+        `;
+        lista.appendChild(li);
+      });
+    }
+
+    carregarProdutos();
+  </script>
 </body>
 </html>
