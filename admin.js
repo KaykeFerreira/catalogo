@@ -1,3 +1,5 @@
+console.log("Firebase App iniciado:", app);
+
 // admin.js
 import { db } from './config.js';
 import {
