@@ -100,9 +100,9 @@
       const lista = document.getElementById('lista-produtos');
       lista.innerHTML = '';
 
-      const produtosRef = collection(db, 'produtos');
-      const snapshot = await getDocs(produtosRef);
-      const snapshot = await getDocs(q);
+    const produtosRef = collection(db, 'produtos');
+    const q = query(produtosRef, orderBy('criadoEm', 'desc'));
+    const snapshot = await getDocs(q);
 
       if (snapshot.empty) {
         lista.innerHTML = '<li>Nenhum produto cadastrado.</li>';
