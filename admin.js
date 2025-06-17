@@ -1,4 +1,3 @@
-// admin.js
 import { db, auth } from './firebase-config.js';
 import {
   collection,
@@ -11,9 +10,18 @@ import {
   orderBy
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
 const form = document.getElementById('form-produto');
 const lista = document.getElementById('lista-produtos');
 const btnLogout = document.getElementById('btn-logout');
+
+// Verificar autenticação
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = 'login.html';
+  }
+});
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -84,8 +92,15 @@ window.deletarProduto = async (id) => {
   }
 };
 
-btnLogout.addEventListener('click', () => {
-  window.location.href = 'inicio.html';
+// Logout correto
+btnLogout.addEventListener('click', async () => {
+  try {
+    await signOut(auth);
+    window.location.href = 'login.html';
+  } catch (error) {
+    alert("Erro ao sair. Tente novamente.");
+  }
 });
 
+// Carregar produtos na inicialização
 carregarProdutos();
