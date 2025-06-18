@@ -7,151 +7,26 @@
     body {
       background: #0f0f18;
       color: #0ff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', Tahoma;
       margin: 0;
       display: flex;
       height: 100vh;
       overflow: hidden;
     }
-
-    nav {
-      background: #11121a;
-      width: 200px;
-      padding: 20px;
-      box-shadow: 2px 0 8px #0ff;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
+    nav { background: #11121a; width: 200px; padding: 20px; box-shadow: 2px 0 8px #0ff; display: flex; flex-direction: column; gap: 20px; }
     nav a, nav button {
-      color: #0ff;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 1.1rem;
-      padding: 10px 15px;
-      border: 1px solid #0ff;
-      border-radius: 6px;
-      background: transparent;
-      cursor: pointer;
-      text-align: center;
+      color: #0ff; text-decoration: none; font-weight: bold; font-size: 1.1rem;
+      padding: 10px 15px; border: 1px solid #0ff; border-radius: 6px;
+      background: transparent; cursor: pointer; text-align: center;
       transition: background 0.3s, color 0.3s;
     }
-
     nav a:hover, nav button:hover {
-      background: #0ff;
-      color: #11121a;
-      box-shadow: 0 0 15px #0ff;
+      background: #0ff; color: #11121a; box-shadow: 0 0 15px #0ff;
     }
-
-    nav button {
-      border: none;
-      background: #11121a;
-      font-family: inherit;
-    }
-
-    main {
-      flex: 1;
-      padding: 20px 30px;
-      overflow-y: auto;
-    }
-
-    h2, h3 {
-      text-shadow: 0 0 8px #0ff;
-      margin-top: 0;
-    }
-
-    input, textarea, button, select {
-      background: #11121a;
-      border: 1px solid #0ff;
-      color: #0ff;
-      padding: 10px;
-      margin: 8px 0;
-      width: 100%;
-      box-sizing: border-box;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-
-    input:focus, textarea:focus {
-      outline: none;
-      box-shadow: 0 0 10px #0ff;
-    }
-
-    button {
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #0ff;
-      color: #11121a;
-      box-shadow: 0 0 15px #0ff;
-    }
-
-    #lista-produtos {
-      list-style: none;
-      padding: 0;
-      margin-top: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-
-    #lista-produtos li {
-      background: #11121a;
-      padding: 15px;
-      border-radius: 6px;
-      box-shadow: 0 0 8px #0ff;
-      width: 250px;
-    }
-
-    #lista-produtos img {
-      margin-top: 10px;
-      border-radius: 6px;
-      max-width: 100%;
-      display: block;
-    }
-  </style>
-</head>
-<body>
-  <nav>
-    <a href="index.html">Início</a>
-    <a href="inicio.html">Ver Produtos</a>
-    <a href="admin.html">Painel Admin</a>
-    <a href="login.html"> Login</a>
-    <button id="btn-logout">Sair</button>
-  </nav>
-
-  <main>
-    <h2>Cadastrar Produto</h2>
-    <form id="form-produto">
-      <input type="text" id="nome" placeholder="Nome do produto" required />
-     <input type="text" id="preco" placeholder="Preço" required />
-      <textarea id="descricao" placeholder="Descrição do produto"></textarea>
-      <input type="url" id="imagemUrl" placeholder="URL da imagem do produto" required />
-      <button type="submit">Cadastrar</button>
-    </form>
-
-    <h3>Produtos cadastrados</h3>
-    <ul id="lista-produtos"></ul>
-  </main>
-
-<script type="module" src="./admin.js"></script>
-
-
-<script type="module">
-  import { auth } from './firebase-config.js';
-  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = 'login.html';
-    }
-  });
-</script>
-
-
-</body>
-</html>
+    nav button { border: none; background: #11121a; font-family: inherit; }
+    main { flex: 1; padding: 20px 30px; overflow-y: auto; }
+    h2, h3 { text-shadow: 0 0 8px #0ff; margin-top: 0; }
+    input, textarea, button { background: #11121a; border: 1px solid #0ff; color: #0ff; padding: 10px; margin: 8px 0; width: 100%; border-radius: 6px; font-size: 1rem; }
+    input:focus, textarea:focus { outline: none; box-shadow: 0 0 10px #0ff; }
+    button:hover { background: #0ff; color: #11121a; box-shadow: 0 0 15px #0ff; }
+    #lista-produtos { list-style:
