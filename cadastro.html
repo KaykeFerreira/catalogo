@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro - Vendo a Hora</title>
+  <link rel="stylesheet" href="inicio.css">
+</head>
+<body>
+  <div class="hero">
+    <h1 class="titulo">Cadastro</h1>
+    <form id="cadastro-form">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="senha" placeholder="Senha" required>
+      <button type="submit" class="botao">Cadastrar</button>
+      <p id="mensagem"></p>
+    </form>
+  </div>
+
+  <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    const form = document.getElementById('cadastro-form');
+    const mensagem = document.getElementById('mensagem');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
+        await setDoc(doc(db, "usuarios", cred.user.uid), {
+          uid: cred.user.uid,
+          email: email,
+          role: "user"
+        });
+        mensagem.textContent = "Usuário cadastrado com sucesso!";
+        form.reset();
+      } catch (error) {
+        mensagem.textContent = "Erro: " + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
