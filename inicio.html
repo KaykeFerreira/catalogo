@@ -13,7 +13,6 @@
       height: 100vh;
       overflow: hidden;
     }
-
     nav {
       background: #11121a;
       width: 220px;
@@ -23,7 +22,6 @@
       flex-direction: column;
       gap: 20px;
     }
-
     nav a {
       color: #0ff;
       text-decoration: none;
@@ -37,24 +35,20 @@
       text-align: center;
       transition: background 0.3s, color 0.3s;
     }
-
     nav a:hover {
       background: #0ff;
       color: #11121a;
       box-shadow: 0 0 15px #0ff;
     }
-
     main {
       flex: 1;
       padding: 30px;
       overflow-y: auto;
     }
-
     h1 {
       text-shadow: 0 0 8px #0ff;
       margin-top: 0;
     }
-
     #lista-produtos {
       list-style: none;
       padding: 0;
@@ -62,7 +56,6 @@
       flex-wrap: wrap;
       gap: 20px;
     }
-
     #lista-produtos li {
       background: #11121a;
       padding: 15px;
@@ -70,7 +63,6 @@
       box-shadow: 0 0 8px #0ff;
       width: 250px;
     }
-
     #lista-produtos img {
       margin-top: 10px;
       border-radius: 6px;
@@ -83,8 +75,8 @@
   <nav>
     <a href="index.html">Início</a>
     <a href="inicio.html">Produtos</a>
-    <a href="admin.html">Painel Admin</a>
-    <a href="login.html">Login</a>
+    <a href="admin.html" id="admin-link">Painel Admin</a>
+    <a href="login.html" id="login-link">Login</a>
   </nav>
 
   <main>
@@ -93,83 +85,56 @@
   </main>
 
   <script type="module">
-    import { db } from './firebase-config.js';
+    import { db, auth } from './firebase-config.js';
     import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
+    // Carregar produtos
     async function carregarProdutos() {
       const lista = document.getElementById('lista-produtos');
       lista.innerHTML = '';
-
-    const produtosRef = collection(db, 'produtos');
-    const q = query(produtosRef, orderBy('criadoEm', 'desc'));
-    const snapshot = await getDocs(q);
-
+      const produtosRef = collection(db, 'produtos');
+      const q = query(produtosRef, orderBy('criadoEm', 'desc'));
+      const snapshot = await getDocs(q);
       if (snapshot.empty) {
         lista.innerHTML = '<li>Nenhum produto cadastrado.</li>';
         return;
       }
-
       snapshot.forEach(docSnap => {
         const p = docSnap.data();
-
-        // Formatar o preço corretamente
         const precoFormatado = new Intl.NumberFormat('pt-BR', {
           style: 'currency',
           currency: 'BRL'
         }).format(p.preco);
-
         const li = document.createElement('li');
-        li.innerHTML = 
-          <strong>${p.nome}</strong><br>
-          ${precoFormatado}<br>
-          ${p.descricao || ''}<br>
-          <img src="${p.imagemUrl}" alt="${p.nome}" />
-        ;
+        li.innerHTML = `<strong>${p.nome}</strong><br>${precoFormatado}<br>${p.descricao || ''}<br><img src="${p.imagemUrl}" alt="${p.nome}" />`;
         lista.appendChild(li);
       });
     }
 
     carregarProdutos();
+
+    // Controle de exibição de menu
+    const adminEmails = ['admin@seusite.com']; // <-- coloque seu email de admin
+    const adminLink = document.getElementById('admin-link');
+    const loginLink = document.getElementById('login-link');
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        if (adminEmails.includes(user.email)) {
+          adminLink.style.display = 'block';
+        } else {
+          adminLink.style.display = 'none';
+        }
+        loginLink.textContent = 'Sair';
+        loginLink.href = '#';
+        loginLink.onclick = () => { signOut(auth).then(() => location.reload()); };
+      } else {
+        adminLink.style.display = 'none';
+        loginLink.textContent = 'Login';
+        loginLink.href = 'login.html';
+      }
+    });
   </script>
 </body>
-</html> // catalogo.js
-import { db } from './firebase-config.js';
-import {
-  collection,
-  getDocs,
-  query,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
-const catalogo = document.getElementById('catalogo');
-
-async function carregarProdutos() {
-  const produtosQuery = query(collection(db, 'produtos'), orderBy('criadoEm', 'desc'));
-  const snapshot = await getDocs(produtosQuery);
-
-  catalogo.innerHTML = '';
-  snapshot.forEach(doc => {
-    const p = doc.data();
-    const card = document.createElement('div');
-    card.className = 'produto-card';
-    card.innerHTML = 
-      <img src="${p.imagemUrl}" alt="${p.nome}" />
-      <h3>${p.nome}</h3>
-      <p>${p.descricao}</p>
-      <p><strong>R$ ${p.preco.toFixed(2)}</strong></p>
-    ;
-    catalogo.appendChild(card);
-  });
-
-  if (catalogo.innerHTML === '') {
-    catalogo.innerHTML = '<p>Nenhum produto cadastrado.</p>';
-  }
-}
-
-carregarProdutos();
-
-// Logout
-const btnLogout = document.getElementById('btn-logout');
-btnLogout.addEventListener('click', () => {
-  window.location.href = 'inicio.html';
-});
+</html>
