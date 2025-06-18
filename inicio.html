@@ -72,18 +72,10 @@
   </style>
 </head>
 <body>
-  <script>
-  // Se a URL terminar com barra, remove e recarrega
-  if (window.location.pathname.endsWith('/')) {
-    const newPath = window.location.pathname.slice(0, -1);
-    window.history.replaceState(null, '', newPath);
-  }
-</script>
-
   <nav>
-    <a href="index.html">Início</a>
-    <a href="inicio.html">Produtos</a>
-    <a href="admin.html" id="admin-link">Painel Admin</a>
+    <a href="/index.html">Início</a>
+    <a href="/inicio.html">Produtos</a>
+    <a href="/admin.html" id="admin-link">Painel Admin</a>
     <a href="/login.html" id="login-link">Login</a>
   </nav>
 
