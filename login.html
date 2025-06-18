@@ -5,9 +5,6 @@
   <title>Login - Admin</title>
   <link rel="stylesheet" href="/inicio.css">
 
-  
-
-
   <style>
     body { 
       background: #0f0f18; 
@@ -71,18 +68,15 @@
       font-weight: bold;
       text-shadow: none;
     }
-
     .logo {
-  width: 150px;
-  margin: 20px auto 0 auto;
-  display: block;
-  filter: drop-shadow(0 0 10px #00cfff);
-}
+      width: 150px;
+      margin: 20px auto 0 auto;
+      display: block;
+      filter: drop-shadow(0 0 10px #00cfff);
+    }
   </style>
 </head>
 <body>
-
-
   <form id="login-form">
     <h2>Admin Login</h2>
     <input type="email" id="email" placeholder="Email" required />
@@ -91,9 +85,8 @@
     <div class="error-message" id="error-msg"></div>
   </form>
 
-
   <script type="module">
-    import { auth } from './firebase-config.js';
+    import { auth } from '/firebase-config.js';
     import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
     const form = document.getElementById('login-form');
@@ -103,7 +96,7 @@
     // Se já estiver logado, redireciona direto para admin.html
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        window.location.href = 'admin.html';
+        window.location.href = '/admin.html';
       }
     });
 
