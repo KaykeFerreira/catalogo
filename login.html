@@ -77,6 +77,14 @@
   </style>
 </head>
 <body>
+  <script>
+  // Se a URL terminar com barra, remove e recarrega
+  if (window.location.pathname.endsWith('/')) {
+    const newPath = window.location.pathname.slice(0, -1);
+    window.history.replaceState(null, '', newPath);
+  }
+</script>
+
   <form id="login-form">
     <h2>Admin Login</h2>
     <input type="email" id="email" placeholder="Email" required />
