@@ -1,52 +1,128 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Login - Vendo a Hora</title>
-  <link rel="stylesheet" href="inicio.css">
+  <meta charset="UTF-8" />
+  <title>Login - Admin</title>
+  <link rel="stylesheet" href="/inicio.css">
+
+  <style>
+    body { 
+      background: #0f0f18; 
+      color: #0ff; 
+      font-family: 'Segoe UI', Tahoma; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh; 
+      margin: 0;
+    }
+    form { 
+      background: #11121a; 
+      padding: 30px; 
+      border-radius: 10px; 
+      box-shadow: 0 0 15px #0ff; 
+      width: 320px; 
+      display: flex;
+      flex-direction: column;
+    }
+    h2 { 
+      text-align: center; 
+      text-shadow: 0 0 8px #0ff; 
+      margin-bottom: 20px;
+    }
+    input, button { 
+      width: 100%; 
+      padding: 10px; 
+      margin-top: 15px; 
+      border: 1px solid #0ff; 
+      border-radius: 5px; 
+      background: transparent; 
+      color: #0ff; 
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 10px #0ff;
+    }
+    button { 
+      cursor: pointer; 
+      font-weight: bold; 
+      transition: 0.3s; 
+      border: none;
+      background: #11121a;
+    }
+    button:hover:enabled { 
+      background: #0ff; 
+      color: #11121a; 
+      box-shadow: 0 0 15px #0ff; 
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+    .error-message {
+      color: #f33;
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+      text-shadow: none;
+    }
+    .logo {
+      width: 150px;
+      margin: 20px auto 0 auto;
+      display: block;
+      filter: drop-shadow(0 0 10px #00cfff);
+    }
+  </style>
 </head>
 <body>
-  <div class="hero">
-    <h1 class="titulo">Login</h1>
-    <form id="login-form">
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="senha" placeholder="Senha" required>
-      <button type="submit" class="botao">Entrar</button>
-      <p id="mensagem"></p>
-    </form>
-  </div>
+
+  <form id="login-form">
+    <h2>Admin Login</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="senha" placeholder="Senha" required />
+    <button type="submit">Entrar</button>
+    <div class="error-message" id="error-msg"></div>
+  </form>
 
   <script type="module">
-    import { auth, db } from './firebase-config.js';
-    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { auth, db } from '/firebase-config.js';
+    import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
     const form = document.getElementById('login-form');
-    const mensagem = document.getElementById('mensagem');
+    const btn = form.querySelector('button');
+    const errorMsg = document.getElementById('error-msg');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      errorMsg.textContent = '';
+      btn.disabled = true;
+
       const email = document.getElementById('email').value;
       const senha = document.getElementById('senha').value;
 
       try {
-        const cred = await signInWithEmailAndPassword(auth, email, senha);
-        const userRef = doc(db, "usuarios", cred.user.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          const userData = userSnap.data();
-          if (userData.role === "admin") {
-            window.location.href = "admin.html";
-          } else {
-            window.location.href = "inicio.html";
-          }
+        const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+        const user = userCredential.user;
+
+        // Agora verificamos se é admin
+        const adminRef = doc(db, 'admins', user.uid);
+        const adminSnap = await getDoc(adminRef);
+        
+        if (adminSnap.exists()) {
+          window.location.href = '/admin.html';
         } else {
-          mensagem.textContent = "Usuário não encontrado no banco de dados.";
+          window.location.href = '/inicio.html';
         }
+
       } catch (error) {
-        mensagem.textContent = "Erro: " + error.message;
+        errorMsg.textContent = 'Erro no login: ' + error.message;
+        btn.disabled = false;
       }
     });
+
   </script>
 </body>
 </html>
