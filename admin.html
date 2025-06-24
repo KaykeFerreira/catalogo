@@ -145,12 +145,17 @@
   import { auth } from './firebase-config.js';
   import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
+  const adminEmail = "vendoahora@gmail.com"; // 🔁 Altere para o e-mail real do admin
+
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       window.location.href = 'login.html';
+    } else if (user.email !== adminEmail) {
+      window.location.href = 'inicio.html'; // 🔒 Bloqueia acesso para usuários comuns
     }
   });
 </script>
+
 
 
 </body>
