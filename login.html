@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Login - Admin</title>
- <link rel="stylesheet" href="/inicio.css">
+  <link rel="stylesheet" href="/inicio.css">
 </head>
 <body>
 
@@ -24,13 +24,15 @@
   </div>
 
   <script type="module">
-    import { auth, db } from './firebase-config.js';
-    import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { auth } from './firebase-config.js';
+    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
     const form = document.getElementById('login-form');
     const btn = form.querySelector('button');
     const errorMsg = document.getElementById('error-msg');
+
+    // Defina aqui o e-mail do ADMIN autorizado
+    const adminEmail = "vendoahora@gmail.com";
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -44,10 +46,8 @@
         const userCredential = await signInWithEmailAndPassword(auth, email, senha);
         const user = userCredential.user;
 
-        const adminRef = doc(db, 'admins', user.uid);
-        const adminSnap = await getDoc(adminRef);
-        
-        if (adminSnap.exists()) {
+        // Verifica se o e-mail é do admin
+        if (user.email === adminEmail) {
           window.location.href = '/admin.html';
         } else {
           window.location.href = '/inicio.html';
