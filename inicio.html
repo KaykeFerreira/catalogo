@@ -14,7 +14,6 @@
       overflow: hidden;
     }
 
-
     nav {
       background: #11121a;
       width: 220px;
@@ -24,6 +23,7 @@
       flex-direction: column;
       gap: 20px;
     }
+
     nav a {
       color: #0ff;
       text-decoration: none;
@@ -36,21 +36,27 @@
       cursor: pointer;
       text-align: center;
       transition: background 0.3s, color 0.3s;
+      display: block;
+      box-sizing: border-box;
     }
+
     nav a:hover {
       background: #0ff;
       color: #11121a;
       box-shadow: 0 0 15px #0ff;
     }
+
     main {
       flex: 1;
       padding: 30px;
       overflow-y: auto;
     }
+
     h1 {
       text-shadow: 0 0 8px #0ff;
       margin-top: 0;
     }
+
     #lista-produtos {
       list-style: none;
       padding: 0;
@@ -58,6 +64,7 @@
       flex-wrap: wrap;
       gap: 20px;
     }
+
     #lista-produtos li {
       background: #11121a;
       padding: 15px;
@@ -65,6 +72,7 @@
       box-shadow: 0 0 8px #0ff;
       width: 250px;
     }
+
     #lista-produtos img {
       margin-top: 10px;
       border-radius: 6px;
@@ -77,8 +85,7 @@
   <nav>
     <a href="index.html">Início</a>
     <a href="inicio.html">Produtos</a>
-    <!-- 🔒 O link do Painel Admin só será mostrado via JS se for o admin -->
-    <div id="adminLink"></div>
+    <!-- Aqui o link Painel Admin será inserido via JS -->
   </nav>
 
   <main>
@@ -89,11 +96,16 @@
   <script type="module">
     import { auth } from './firebase-config.js';
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
     const adminEmail = "vendoahora@gmail.com";
 
     onAuthStateChanged(auth, (user) => {
       if (user && user.email === adminEmail) {
-        document.getElementById('adminLink').innerHTML = `<a href="admin.html">Painel Admin</a>`;
+        const nav = document.querySelector('nav');
+        const adminLink = document.createElement('a');
+        adminLink.href = 'admin.html';
+        adminLink.textContent = 'Painel Admin';
+        nav.appendChild(adminLink);
       }
     });
   </script>
