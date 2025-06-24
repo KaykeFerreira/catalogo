@@ -13,6 +13,27 @@
       height: 100vh;
       overflow: hidden;
     }
+    #adminLink a {
+  color: #0ff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 10px 15px;
+  border: 1px solid #0ff;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block; /* para respeitar padding e tamanho */
+  transition: background 0.3s, color 0.3s;
+}
+
+#adminLink a:hover {
+  background: #0ff;
+  color: #11121a;
+  box-shadow: 0 0 15px #0ff;
+}
+
     nav {
       background: #11121a;
       width: 220px;
@@ -76,7 +97,7 @@
     <a href="index.html">Início</a>
     <a href="inicio.html">Produtos</a>
     <!-- 🔒 O link do Painel Admin só será mostrado via JS se for o admin -->
-    <span id="adminLink"></span>
+    <div id="adminLink"></div>
   </nav>
 
   <main>
