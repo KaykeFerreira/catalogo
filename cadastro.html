@@ -12,7 +12,7 @@
       <input type="email" id="email" placeholder="Email" required>
       <input type="password" id="senha" placeholder="Senha" required>
       <button type="submit" class="botao">Cadastrar</button>
-      <p id="mensagem"></p>
+      <p id="mensagem" style="margin-top: 10px; font-weight: bold;"></p>
     </form>
   </div>
 
@@ -26,6 +26,7 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      mensagem.textContent = '';
       const email = document.getElementById('email').value;
       const senha = document.getElementById('senha').value;
 
@@ -36,10 +37,27 @@
           email: email,
           role: "user"
         });
+        mensagem.style.color = "#0f0"; // verde neon
         mensagem.textContent = "Usuário cadastrado com sucesso!";
         form.reset();
       } catch (error) {
-        mensagem.textContent = "Erro: " + error.message;
+        let msgErro;
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            msgErro = 'Este e-mail já está cadastrado.';
+            break;
+          case 'auth/invalid-email':
+            msgErro = 'E-mail inválido.';
+            break;
+          case 'auth/weak-password':
+            msgErro = 'A senha deve ter pelo menos 6 caracteres.';
+            break;
+          default:
+            msgErro = 'Erro ao cadastrar. Tente novamente.';
+        }
+
+        mensagem.style.color = "#f33"; // vermelho neon
+        mensagem.textContent = msgErro;
       }
     });
   </script>
