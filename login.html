@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Login </title>
+  <title>Login</title>
   <link rel="stylesheet" href="/inicio.css">
 </head>
 <body>
@@ -18,9 +18,8 @@
       <input type="email" id="email" placeholder="Email" required />
       <input type="password" id="senha" placeholder="Senha" required />
       <button type="submit" class="botao">Entrar</button>
-      <div class="error-message" id="error-msg" style="margin-top: 10px; color: #f33; font-weight: bold;"></div>
+      <div id="error-msg" style="margin-top: 10px; color: #f33; font-weight: bold;"></div>
     </form>
-
   </div>
 
   <script type="module">
@@ -31,7 +30,6 @@
     const btn = form.querySelector('button');
     const errorMsg = document.getElementById('error-msg');
 
-    // Defina aqui o e-mail do ADMIN autorizado
     const adminEmail = "Vendoahora00@gmail.com";
 
     form.addEventListener('submit', async (e) => {
@@ -46,16 +44,36 @@
         const userCredential = await signInWithEmailAndPassword(auth, email, senha);
         const user = userCredential.user;
 
-        // Verifica se o e-mail é do admin
         if (user.email === adminEmail) {
           window.location.href = '/admin.html';
         } else {
           window.location.href = '/inicio.html';
         }
-
       } catch (error) {
-        errorMsg.textContent = 'Erro no login: ' + error.message;
         btn.disabled = false;
+
+        let mensagem;
+        switch (error.code) {
+          case 'auth/user-not-found':
+            mensagem = 'Usuário não encontrado. Verifique o e-mail.';
+            break;
+          case 'auth/wrong-password':
+            mensagem = 'Senha incorreta. Tente novamente.';
+            break;
+          case 'auth/invalid-email':
+            mensagem = 'E-mail inválido. Digite um e-mail válido.';
+            break;
+          case 'auth/too-many-requests':
+            mensagem = 'Muitas tentativas. Tente novamente mais tarde.';
+            break;
+          case 'auth/network-request-failed':
+            mensagem = 'Problema de conexão com a internet.';
+            break;
+          default:
+            mensagem = 'Erro ao tentar fazer login. Tente novamente.';
+        }
+
+        errorMsg.textContent = mensagem;
       }
     });
   </script>
