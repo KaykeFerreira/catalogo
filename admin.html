@@ -144,13 +144,13 @@
   import { auth } from './firebase-config.js';
   import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-  const adminEmail = "vendoahora00@gmail.com"; 
+  const adminEmails = ["vendoahora00@gmail.com", "kaykedasilvaferreira09@gmail.com"]; 
 
 
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       window.location.href = 'login.html';
-    } else if (user.email !== adminEmail) {
+    } else if (!adminEmails.includes(user.email)) {
       window.location.href = 'inicio.html'; // 🔒 Bloqueia acesso para usuários comuns
     }
   });
