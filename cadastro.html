@@ -38,32 +38,10 @@
         });
         mensagem.textContent = "Usuário cadastrado com sucesso!";
         form.reset();
-    .catch((error) => {
-    const errorCode = error.code;
-
-    // Mensagens personalizadas com base no código de erro
-    let mensagemErro;
-    switch (errorCode) {
-      case 'auth/user-not-found':
-        mensagemErro = 'Usuário não encontrado. Verifique o e-mail digitado.';
-        break;
-      case 'auth/wrong-password':
-        mensagemErro = 'Senha incorreta. Tente novamente.';
-        break;
-      case 'auth/invalid-email':
-        mensagemErro = 'E-mail inválido. Digite um e-mail válido.';
-        break;
-      case 'auth/user-disabled':
-        mensagemErro = 'Este usuário foi desativado.';
-        break;
-      default:
-        mensagemErro = 'Erro ao tentar fazer login. Tente novamente mais tarde.';
-    }
-
-    // Exibe a mensagem no HTML
-    document.getElementById('mensagem-erro').innerText = mensagemErro;
-  });
-   
+      } catch (error) {
+        mensagem.textContent = "Erro: " + error.message;
+      }
+    });
   </script>
 </body>
 </html>
