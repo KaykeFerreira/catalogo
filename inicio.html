@@ -97,10 +97,12 @@
     import { auth } from './firebase-config.js';
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-    const adminEmail = "vendoahora00@gmail.com";
+    // ✅ Lista de e-mails de administradores
+  const adminEmails = ["vendoahora00@gmail.com", "kaykedasilaferreira09@gmail.com"];
+
 
     onAuthStateChanged(auth, (user) => {
-      if (user && user.email === adminEmail) {
+      if (user && adminEmails.includes(user.email)) {
         const nav = document.querySelector('nav');
         const adminLink = document.createElement('a');
         adminLink.href = 'admin.html';
