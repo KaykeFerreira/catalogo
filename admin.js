@@ -2,13 +2,10 @@ import { db, auth } from './firebase-config.js';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-// Referência à coleção de produtos
 const produtosCollection = collection(db, 'produtos');
 
-// Variável de controle para edição
 let idProdutoEditando = null;
 
-// Máscara reversa para o campo de preço
 const precoInput = document.getElementById('preco');
 let valorNumerico = '';
 
@@ -23,7 +20,15 @@ precoInput.addEventListener('input', () => {
   precoInput.value = formatado;
 });
 
-// Função para preencher o formulário ao editar
+// 🔧 NOVA FUNÇÃO: formata o link do Google Drive
+function formatarLinkDrive(url) {
+  const match = url.match(/\/d\/(.+?)\//);
+  if (match) {
+    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  }
+  return url; // Se não for link do Drive, mantém original
+}
+
 function preencherFormularioEdicao(id, data) {
   document.getElementById('nome').value = data.nome;
   document.getElementById('descricao').value = data.descricao;
@@ -34,14 +39,17 @@ function preencherFormularioEdicao(id, data) {
   document.querySelector('button[type="submit"]').textContent = 'Salvar Alterações';
 }
 
-// Cadastro e edição de produto
 const form = document.getElementById('form-produto');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const nome = document.getElementById('nome').value;
   const descricao = document.getElementById('descricao').value;
-  const imagemUrl = document.getElementById('imagemUrl').value;
+  const imagemOriginal = document.getElementById('imagemUrl').value;
+
+  // ✅ Aqui usamos a função para corrigir o link do Google Drive
+  const imagemUrl = formatarLinkDrive(imagemOriginal);
+
   const precoFormatado = precoInput.value.replace(/\./g, '').replace(',', '.');
   const preco = parseFloat(precoFormatado);
 
@@ -52,7 +60,7 @@ form.addEventListener('submit', async (e) => {
         nome,
         preco,
         descricao,
-        imagemUrl
+        imagemUrl // 🔄 usando o link formatado
       });
       idProdutoEditando = null;
       document.querySelector('button[type="submit"]').textContent = 'Cadastrar';
@@ -61,7 +69,7 @@ form.addEventListener('submit', async (e) => {
         nome,
         preco,
         descricao,
-        imagemUrl,
+        imagemUrl, // 🔄 usando o link formatado
         criadoEm: new Date()
       });
     }
@@ -74,7 +82,6 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-// Listagem de produtos
 async function listarProdutos() {
   const lista = document.getElementById('lista-produtos');
   lista.innerHTML = '';
@@ -95,13 +102,11 @@ async function listarProdutos() {
       <button data-id="${docItem.id}" class="btn-editar">Editar</button>
     `;
 
-    // Botão excluir
     li.querySelector('.btn-excluir').addEventListener('click', async () => {
       await deleteDoc(doc(produtosCollection, docItem.id));
       listarProdutos();
     });
 
-    // Botão editar
     li.querySelector('.btn-editar').addEventListener('click', () => {
       preencherFormularioEdicao(docItem.id, data);
     });
@@ -110,11 +115,9 @@ async function listarProdutos() {
   });
 }
 
-// Logout
 document.getElementById('btn-logout').addEventListener('click', async () => {
   await signOut(auth);
   window.location.href = 'login.html';
 });
 
-// Inicializa a listagem ao carregar a página
 listarProdutos();
