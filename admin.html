@@ -127,9 +127,9 @@
     <h2>Cadastrar Produto</h2>
     <form id="form-produto">
       <input type="text" id="nome" placeholder="Nome do produto" required />
-     <input type="text" id="preco" placeholder="Preço" required />
+      <input type="text" id="preco" placeholder="Preço" required />
       <textarea id="descricao" placeholder="Descrição do produto"></textarea>
-      <input type="url" id="imagemUrl" placeholder="URL da imagem do produto" required />
+      <input type="file" id="imagemArquivo" accept="image/*" required />
       <button type="submit">Cadastrar</button>
     </form>
 
@@ -137,26 +137,18 @@
     <ul id="lista-produtos"></ul>
   </main>
 
-<script type="module" src="./admin.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.0"></script>
+  <script type="module" src="./admin.js"></script>
 
+  <script type="module">
+    import { auth } from './firebase-config.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-<script type="module">
-  import { auth } from './firebase-config.js';
-  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
-  const adminEmails = ["vendoahora00@gmail.com", "kaykedasilvaferreira09@gmail.com"]; 
-
-
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = 'login.html';
-    } else if (!adminEmails.includes(user.email)) {
-      window.location.href = 'inicio.html'; // 🔒 Bloqueia acesso para usuários comuns
-    }
-  });
-</script>
-
-
-
+    const adminEmails = ["vendoahora00@gmail.com", "kaykedasilvaferreira09@gmail.com"];
+    onAuthStateChanged(auth, (user) => {
+      if (!user) window.location.href = 'login.html';
+      else if (!adminEmails.includes(user.email)) window.location.href = 'inicio.html';
+    });
+  </script>
 </body>
 </html>
