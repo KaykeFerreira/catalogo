@@ -12,7 +12,7 @@ const storage = new Storage(client);
 const databases = new Databases(client);
 
 const bucketId = "68643c6f0026c7bd6385"; // seu bucket ID
-const databaseId = "catalogo";        // seu database ID
+const databaseId = "686413410021b3802b70";        // seu database ID
 const collectionId = "produtos";          // sua collection ID
 
 let idProdutoEditando = null;
