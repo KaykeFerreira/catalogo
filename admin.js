@@ -1,18 +1,19 @@
-// admin.js com suporte a upload via Appwrite
+// admin.js
 import { auth } from './firebase-config.js';
 import { signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 import { Client, Storage, Databases, ID } from "https://cdn.jsdelivr.net/npm/appwrite@13.0.0/+esm";
 
 const client = new Client()
-  .setEndpoint("https://nyc.cloud.appwrite.io/v1")
-  .setProject("6864128900221c71533b");
+  .setEndpoint("https://nyc.cloud.appwrite.io/v1") // seu endpoint Appwrite
+  .setProject("6864128900221c71533b"); // seu project ID
 
 const storage = new Storage(client);
 const databases = new Databases(client);
-const bucketId = "68643c6f0026c7bd6385";
-const databaseId = "catalogo_db";
-const collectionId = "produtos";
+
+const bucketId = "68643c6f0026c7bd6385"; // seu bucket ID
+const databaseId = "catalogo_db";        // seu database ID
+const collectionId = "produtos";          // sua collection ID
 
 let idProdutoEditando = null;
 let valorNumerico = '';
@@ -41,29 +42,38 @@ const form = document.getElementById('form-produto');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const nome = document.getElementById('nome').value;
-  const descricao = document.getElementById('descricao').value;
+  const nome = document.getElementById('nome').value.trim();
+  const descricao = document.getElementById('descricao').value.trim();
   const precoFormatado = precoInput.value.replace(/\./g, '').replace(',', '.');
   const preco = parseFloat(precoFormatado);
 
   const imagemArquivo = document.getElementById('imagemArquivo').files[0];
-  if (!imagemArquivo) return alert("Selecione uma imagem");
+  if (!imagemArquivo && !idProdutoEditando) {
+    return alert("Selecione uma imagem");
+  }
 
   try {
     let imagemId;
-    if (!idProdutoEditando || imagemArquivo) {
+    let imageUrl;
+
+    // Se estiver editando e não trocar a imagem, mantém a antiga
+    if (idProdutoEditando && !imagemArquivo) {
+      // Buscar produto para pegar a URL atual
+      const docAtual = await databases.getDocument(databaseId, collectionId, idProdutoEditando);
+      imageUrl = docAtual.imagemUrl;
+    } else {
+      // Upload novo arquivo
       const uploadResponse = await storage.createFile(bucketId, ID.unique(), imagemArquivo);
       imagemId = uploadResponse.$id;
+      imageUrl = storage.getFileView(bucketId, imagemId);
     }
-
-    const imageUrl = storage.getFilePreview(bucketId, imagemId);
 
     if (idProdutoEditando) {
       await databases.updateDocument(databaseId, collectionId, idProdutoEditando, {
         nome,
         preco,
         descricao,
-        imagemUrl: imageUrl.href
+        imagemUrl: imageUrl
       });
       idProdutoEditando = null;
       document.querySelector('button[type="submit"]').textContent = 'Cadastrar';
@@ -72,7 +82,7 @@ form.addEventListener('submit', async (e) => {
         nome,
         preco,
         descricao,
-        imagemUrl: imageUrl.href,
+        imagemUrl: imageUrl,
         criadoEm: new Date().toISOString()
       });
     }
@@ -82,6 +92,7 @@ form.addEventListener('submit', async (e) => {
     listarProdutos();
   } catch (error) {
     console.error("Erro ao salvar produto:", error);
+    alert("Erro ao salvar produto, veja o console.");
   }
 });
 
@@ -105,8 +116,13 @@ async function listarProdutos() {
       `;
 
       li.querySelector('.btn-excluir').addEventListener('click', async () => {
-        await databases.deleteDocument(databaseId, collectionId, doc.$id);
-        listarProdutos();
+        try {
+          await databases.deleteDocument(databaseId, collectionId, doc.$id);
+          listarProdutos();
+        } catch (error) {
+          console.error("Erro ao excluir produto:", error);
+          alert("Erro ao excluir produto.");
+        }
       });
 
       li.querySelector('.btn-editar').addEventListener('click', () => {
@@ -117,6 +133,7 @@ async function listarProdutos() {
     });
   } catch (error) {
     console.error("Erro ao listar produtos:", error);
+    alert("Erro ao carregar produtos.");
   }
 }
 
